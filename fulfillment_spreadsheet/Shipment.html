@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial;
+    }
+    body {
+      overflow:hidden;
+      margin-top: 0;
+    }
+    .main {
+      display: flex;
+      width: 100%;
+    }
+    .col {
+      width: 100%;
+      padding: 2em 0;
+    }
+    .right {
+      padding-left: 1.5em;
+    }
+    .col label {
+      display: block;
+      padding: 0;
+      margin: 0;
+    }
+    input, textarea, select  {
+      height: 2em;
+      width: 13.5em;
+      padding: 0.25em;
+      margin-bottom: 1.5em;
+    }
+    textarea {
+      overflow: hidden;
+      resize: vertical;
+      max-height: 5em;
+      min-height: 2em;
+      white-space-collapse: unset;
+      margin-bottom: 1.2em;
+    }
+    #submit-label {visibility: hidden;}
+    .red {color: red;}
+    </style>
+  </head>
+  <body>
+    <form id="form" class="main">
+      <div class="col">
+          <label for="date">Date<span class="red">*</span></label>
+          <input id="date" name="date" type="date" style="input" required/>
+          <label for="name">Name<span class="red">*</span></label>
+          <input id="name" name="name" type="text" style="input" required/>
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes" style="input"></textarea>
+          <label id="submit-label" for="submit">Submit Button</label>
+          <input id="submit" name="submit" type="submit" value="Submit" style="input"/>
+      </div>
+      <div class="col right">
+        <label for="tracking">Tracking Number<span class="red">*</span></label>
+        <input id="tracking" name="tracking" type="text" style="input" required/>
+        <label for="app">App<span class="red">*</span></label>
+        <select id="app" name="app" required>
+          <option value=""></option>
+          <option value="Manual">Manual</option>
+          <option value="Shippo">Shippo</option>
+        </select>
+        <label for="carrier">Carrier<span class="red">*</span></label>
+        <select id="carrier" name="carrier" required>
+          <option value=""></option>
+            <option value="USPS">USPS</option>
+            <option value="UPS">UPS</option>
+            <option value="FedEx">FedEx</option>
+        </select>
+        <label for="items">Items</label>
+        <textarea id="items" name="items" style="input"></textarea>
+      </div>
+    </form>
+  </body>
+  <script>
+    document.getElementById("form").addEventListener("submit", submitValues); 
+    function submitValues() {
+      let formValues = [];
+
+      // Get form values
+      let date = document.getElementById("date").value;
+      let name = document.getElementById("name").value;
+      let tracking = document.getElementById("tracking").value;
+      let carrier = document.getElementById("carrier").value;
+      let app = document.getElementById("app").value;
+      let notes = document.getElementById("notes").value;
+      let items = document.getElementById("items").value;
+
+      // Send form values to function
+      formValues.push(date,name,tracking,carrier,app,notes,items);
+      google.script.run.placeManualOrder(formValues);
+      google.script.host.close();
+    }
+  </script>
+</html>

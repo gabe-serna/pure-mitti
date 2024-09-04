@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script>
+      document.onreadystatechange = function() {
+        if (document.readyState == "complete") {
+          document.getElementById('output').innerHTML = "Fetching Orders";
+        }
+      };
+
+      function onSuccess(items){
+        //Hide Loader
+        document.getElementById("loader").style.display = "none";
+        let list = document.getElementById('output');
+        list.innerHTML = "";
+
+        //Display Items
+        for (let i = 0; i < items.length; i++){
+          list.innerHTML += `<div style="display:flex"><li class="item hover">${items[i]}</li></div>`;
+        }
+
+        //Add Event Listeners
+        let itemList = document.getElementsByClassName("item");
+        for (let j = 0; j < itemList.length; j++){
+          itemList[j].addEventListener("click", clickFunction);
+        }
+
+        document.getElementById("yes").addEventListener("click", goForward);
+        document.getElementById("no").addEventListener("click", goBack);
+        document.getElementById("form").addEventListener("submit", submit);
+      }
+
+      function clickFunction(evt){
+        //Display Confirmation
+        document.getElementById("check").style.display = "block";
+        document.getElementById("yes").style.display = "block";
+        document.getElementById("no").style.display = "block";
+        evt.target.style.border = "solid";
+
+        //Removing Event Listeners from List
+        let itemList = document.getElementsByClassName("item");
+        for (let j = 0; j < itemList.length; j++){
+          itemList[j].removeEventListener("click", clickFunction);
+          itemList[j].classList.remove("hover");
+        }
+      }
+
+      function goForward(){
+        //Hide all elements on screen
+        let itemList = document.getElementsByClassName("item");
+        for (let j = 0; j < itemList.length; j++){itemList[j].style.display = "none"};
+        document.getElementById("check").style.display = "none";
+        document.getElementById("yes").style.display = "none";
+        document.getElementById("no").style.display = "none";
+
+        //Display Shipment Form
+        document.getElementById("form").style.display = "flex";
+        document.getElementById("form").style.visibility = "visible";
+      }
+
+      function goBack(){
+        //Undisplay Confirmation
+        document.getElementById("check").style.display = "none";
+        document.getElementById("yes").style.display = "none";
+        document.getElementById("no").style.display = "none";
+
+        //Readding Event Listeners to List
+        let itemList = document.getElementsByClassName("item");
+        for (let j = 0; j < itemList.length; j++){
+          itemList[j].addEventListener("click", clickFunction);
+          itemList[j].classList.add("hover");
+          itemList[j].style.border = "none";
+        }
+      }
+
+      function submit(){
+        //Get form values
+        let formValues = [];
+        let date = document.getElementById("date").value;
+        let name = '';
+        let tracking = document.getElementById("tracking").value;
+        let carrier = document.getElementById("carrier").value;
+        let app = document.getElementById("app").value;
+        let notes = '';
+        let items = '';
+        let string = '';   
+
+        // Obtaining Order Text
+        let itemList = document.getElementsByClassName("item");
+        for (let j = 0; j < itemList.length; j++){
+          if (itemList[j].style.border == "solid"){
+            string = itemList[j].innerText;
+          };
+        }
+
+        //Send form values to function
+        formValues.push(date,name,tracking,carrier,app,notes,items,string);
+        google.script.run.withSuccessHandler(end)
+          .placeManualOrder(formValues);
+
+        //Display Loader
+        document.getElementById("form").style.display = "none";
+        document.getElementById("loader").style.display = "block";
+        document.getElementById('output').innerHTML = "Removing Item";
+      }
+
+      function end(){
+        google.script.host.close();
+      }
+
+      google.script.run.withSuccessHandler(onSuccess)
+        .getManualOrders();
+    </script>
+    <style>
+        * {
+          box-sizing: border-box;
+          font-family: Arial;
+        }
+        body {overflow:hidden;}
+        #loader {
+          border: 12px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 12px solid #444444;
+          width: 70px;
+          height: 70px;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+ 
+        .center {
+          position: absolute;
+          inset: 0;
+          margin: auto;
+        }
+        
+        .item {
+          padding: 10px;
+        }
+
+        .hover:hover {
+          color: grey;
+          cursor: pointer;
+        }
+
+        #check {
+          margin-top: 40px;
+          display: none;
+        }
+
+        .option {
+          width: 50%;
+          display: flex;
+          justify-content: space-around;
+        }
+
+        button {
+          border: solid 1px #e0dede;
+          width: 100%;
+          height: 25px;
+          margin: 5px 20px 10px 0px;
+        }
+
+        button:hover{
+          background-color: #e0dede;
+          cursor: pointer;
+        }
+
+        #yes, #no {
+          display: none;
+        }
+
+        ul {
+          margin-left: 0;
+          padding-left: 1rem;
+        }
+
+        /* Shipment Form CSS */
+        #submit-label {visibility: hidden;}
+        .red {color: red;}
+        .main {
+          visibility: hidden;
+          display: none;
+          margin-top: -2em;
+          width: 100%;
+        }
+        .col {
+          width: 100%;
+          padding: 2em 0;
+        }
+        .right {
+          padding-left: 1.5em;
+        }
+        .col label {
+          display: block;
+          padding: 0;
+          margin: 0;
+        }
+        input, textarea, select  {
+          height: 2em;
+          width: 13.5em;
+          padding: 0.25em;
+          margin-bottom: 1.5em;
+        }
+        textarea {
+          overflow: hidden;
+          resize: vertical;
+          max-height: 5em;
+          min-height: 2em;
+          white-space-collapse: unset;
+          margin-bottom: 1.2em;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="loader" class="center"></div>
+    <ul id="output">
+    </ul>
+    <div>
+      <p id="check">Are you sure this is the correct order?</p>
+    </div>
+    <div class="option">
+      <button type="button" id="yes">Yes</button>
+      <button type="button" id="no">No</button>
+    </div>
+
+    <!-- Shipment Form HTML -->
+    <form id="form" class="main">
+      <div class="col">
+          <label for="date">Date<span class="red">*</span></label>
+          <input id="date" name="date" type="date" style="input" required/>
+          <label for="tracking">Tracking Number<span class="red">*</span></label>
+          <input id="tracking" name="tracking" type="text" style="input" required/>
+          <label id="submit-label" for="submit">Submit Button</label>
+          <input id="submit" name="submit" type="submit" value="Submit" style="input"/>
+      </div>
+      <div class="col right">
+        <label for="app">App<span class="red">*</span></label>
+        <select id="app" name="app" required>
+          <option value=""></option>
+          <option value="Manual">Manual</option>
+          <option value="Shippo">Shippo</option>
+        </select>
+        <label for="carrier">Carrier<span class="red">*</span></label>
+        <select id="carrier" name="carrier" required>
+          <option value=""></option>
+            <option value="USPS">USPS</option>
+            <option value="UPS">UPS</option>
+            <option value="FedEx">FedEx</option>
+        </select>
+      </div>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: Arial;
+        --input-width: 11rem;
+      }
+      body {
+        overflow: hidden;
+      }
+      .main {
+        display: flex;
+        height: min-content;
+        width: 100%;
+      }
+      .col {
+        width: min-content;
+        padding: 1em;
+        padding-right: 1.5em;
+      }
+      .col label {
+        display: block;
+        padding: 0;
+        margin: 0;
+      }
+      input,
+      textarea,
+      .type {
+        height: 2em;
+        width: var(--input-width);
+        padding: 0.25em;
+        margin-bottom: 1rem;
+      }
+      label,
+      aside {
+        width: var(--input-width);
+      }
+      #items-select {
+        width: var(--input-width);
+        padding: 0.25em;
+        margin-bottom: 1.5em;
+      }
+      .address {
+        overflow: hidden;
+        resize: none;
+        height: calc(4em + 38.5px);
+        min-height: 2em;
+        white-space-collapse: unset;
+        margin-bottom: 1.2em;
+      }
+      .red {
+        color: red;
+      }
+      .green {
+        color: green;
+      }
+      .hidden {
+        display: none;
+      }
+      .items {
+        resize: none;
+        height: 11.25rem;
+        width: calc(var(--input-width) * 1.5);
+        min-height: 2em;
+        white-space-collapse: unset;
+        margin-bottom: 1.2em;
+        border: 1px solid grey;
+        user-select: none;
+        font-size: 14px;
+        --webkit-user-select: none;
+        overflow-y: scroll;
+        padding-bottom: 0;
+
+        & ul {
+          padding: 6px 4px 0 1.375rem;
+          margin: 0;
+          & li {
+            padding-bottom: 4px;
+            &:hover {
+              color: red;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .item-button {
+        height: 1.5rem;
+        width: 5.5rem;
+        margin-bottom: 1rem;
+      }
+      #remove-item {
+        height: min-content;
+        width: calc(var(--input-width) * 1.5);
+        font-style: italic;
+        color: red;
+        background: transparent;
+        border: none;
+      }
+      #submit-end {
+        width: calc(var(--input-width) * 1.5);
+      }
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        margin-left: var(--input-width);
+        background-color: white;
+        width: var(--input-width);
+        max-height: 5.5em;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        border-radius: 0.5rem;
+        z-index: 1;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        margin-top: -2.75rem;
+        * {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 14px;
+          cursor: pointer;
+        }
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 2em;
+        padding: 12px 16px;
+        & p {
+          margin: 0;
+          &:last-of-type {
+            color: grey;
+          }
+        }
+        &:hover {
+          background-color: #767676;
+          & p:first-of-type {
+            color: white;
+          }
+          & p:last-of-type {
+            color: #c7c7c7;
+          }
+        }
+      }
+      .show {
+        display: block;
+      }
+      ::-webkit-scrollbar {
+        background: transparent;
+        width: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: grey;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-button {
+        background: transparent;
+        height: 2px;
+      }
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      /* Firefox */
+      input[type='number'] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+      #loader {
+        border: 12px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 12px solid #444444;
+        width: 70px;
+        height: 70px;
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script>
+      let itemQuantities = undefined;
+      const quantitySuccess = itemQuantitiesObject =>
+        (itemQuantities = itemQuantitiesObject);
+
+      const itemSuccess = entries => {
+        items.innerHTML = '';
+        entries.forEach(entry => {
+          let amount = entry.match(/^\S*/);
+          amount = amount[0];
+          const color = amount > 0 ? 'green' : amount < 0 ? 'red' : 'black';
+          const name = entry.replace(amount, '');
+          items.innerHTML += `<li onmouseover="hoverEnter()" onmouseout="hoverExit()" onclick="removeItem(event)"><span class="${color}">${amount}</span>${name}</li>`;
+        });
+        document.getElementById('loader').style.display = 'none';
+        formEnd.style.display = 'flex';
+      };
+
+      google.script.run
+        .withSuccessHandler(quantitySuccess)
+        .getInventoryItemQuantities();
+      google.script.run.withSuccessHandler(itemSuccess).getEntries();
+    </script>
+  </head>
+  <body>
+    <div id="loader" style="display: block"></div>
+    <form id="form-end" style="display: none" class="main">
+      <div class="col">
+        <label for="items-select">Select Items</label>
+        <select
+          id="items-select"
+          name="items-select"
+          style="display: block"
+          size="10"
+          onchange="showItemOptions()"
+        >
+          <option value="" style="display: none" selected></option>
+          <optgroup label="Soaps" id="soaps">
+            <option id="Neem Soap" value="Neem Soap">Neem Soap</option>
+            <option id="Tulsi Soap" value="Tulsi Soap">Tulsi Soap</option>
+            <option id="Turmeric Soap" value="Turmeric Soap">Turmeric Soap</option>
+            <option id="Vetiver Soap" value="Vetiver Soap">Vetiver Soap</option>
+          </optgroup>
+          <optgroup label="Bags" id="bags">
+            <option value="Natural 6 Pouch Bag">Natural 6 Pouch Bag</option>
+            <option value="Natural 4 Pouch Bag">Natural 4 Pouch Bag</option>
+            <option value="Green 6 Pouch Bag">Green 6 Pouch Bag</option>
+            <option value="Green 4 Pouch Bag">Green 4 Pouch Bag</option>
+            <option value="Indigo 6 Pouch Bag">Indigo 6 Pouch Bag</option>
+            <option value="Indigo 4 Pouch Bag">Indigo 4 Pouch Bag</option>
+          </optgroup>
+          <optgroup label="Dishbars" id="dishbars">
+            <option value="Unscented Dishbar">Unscented Dishbar</option>
+            <option value="Basil Dishbar">Basil Dishbar</option>
+            <option value="Lemon Dishbar">Lemon Dishbar</option>
+          </optgroup>
+          <optgroup label="Hair Products" id="hair">
+            <option value="Arappu">Arappu</option>
+            <option value="Moringa">Moringa</option>
+            <option value="Shikakai">Shikakai</option>
+            <option value="Herbal Hair Wash">Herbal Hair Wash</option>
+          </optgroup>
+        </select>
+        <div id="quantity-container" style="visibility: hidden">
+          <label for="quantity">Quantity<span class="red">*</span></label>
+          <div
+            style="
+              width: var(--input-width);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-top: 2px;
+            "
+          >
+            <input
+              id="quantity"
+              name="quantity"
+              style="width: 30%; margin-right: 0.25rem"
+              type="number"
+              oninput="quantityOnChange(event)"
+            />
+            <select id="unit" name="unit" class="type" style="width: 100%">
+              <option id="single-unit" value="single-unit">unit</option>
+              <option value="case">case(s)</option>
+            </select>
+          </div>
+        </div>
+        <div id="month-container" style="display: none">
+          <div class="dropdown">
+            <label for="month">Month<span class="red">*</span></label>
+            <select
+              id="month"
+              class="type"
+              style="margin-top: 3px"
+              onmousedown="hideDefaultDropdown(event)"
+            >
+              <option value="" selected hidden></option>
+            </select>
+            <div id="month-dropdown" class="dropdown-content">
+              <div class="dropdown-item">
+                <p>Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <aside id="amountInStock" style="display: none"></aside>
+      </div>
+      <div style="margin-top: 2.125rem; width: min-content; height: 11.25rem">
+        <button type="button" id="add-item" class="item-button">Add Item ➜</button>
+      </div>
+      <div class="col right" style="padding-left: 1.5em">
+        <label for="items">Item Entries</label>
+        <div id="items" name="items" class="items">
+          <ul id="items-list"></ul>
+        </div>
+        <input id="submit-end" name="submit" type="submit" value="Submit" />
+        <button type="button" id="remove-item" class="hidden">
+          Click to Remove Item
+        </button>
+      </div>
+    </form>
+  </body>
+  <script>
+    const formEnd = document.getElementById('form-end');
+    formEnd.addEventListener('submit', submitRequest);
+    document.getElementById('add-item').addEventListener('click', addItems);
+    document.getElementById('remove-item').addEventListener('click', removeItem);
+
+    const items = document.getElementById('items-list');
+    const selection = document.getElementById('items-select');
+
+    function showItemOptions() {
+      const quantity = document.getElementById('quantity-container');
+      const unit = document.getElementById('single-unit');
+      const month = document.getElementById('month-container');
+      const amountInStock = document.getElementById('amountInStock');
+      const value = selection.value;
+
+      if (value.includes('Soap')) {
+        quantity.style.visibility = 'visible';
+        month.style.display = 'block';
+        amountInStock.style.display = 'none';
+        unit.textContent = 'soap(s)';
+        document.getElementById('quantity').focus();
+
+        // Adding Months
+        if (itemQuantities) {
+          const monthSelect = document.getElementById('month');
+          const monthDropdown = document.getElementById('month-dropdown');
+          monthSelect.innerHTML =
+            '<option value="" style="display: none" selected></option>';
+          monthDropdown.innerHTML = '';
+
+          for (let i = 0; itemQuantities[value][i] !== undefined; i++) {
+            let date = itemQuantities[value][i].match(/^(.*):[^:]*$/);
+            date = date[1];
+            let amount = itemQuantities[value][i].match(/[^:]*$/);
+            amount = amount[0];
+
+            monthSelect.innerHTML += `<option value="${date}">${date}</option>`;
+            monthDropdown.innerHTML += `
+              <div class="dropdown-item">
+                <p>${date}</p>
+                <p>${amount}</p>
+              </div>
+            `;
+            addItemListeners();
+          }
+        }
+        return;
+      }
+
+      if (value.includes('Bag')) unit.textContent = 'bag(s)';
+      else if (value.includes('Dishbar')) unit.textContent = 'bar(s)';
+      else unit.textContent = 'jar(s)';
+
+      quantity.style.visibility = 'visible';
+      month.style.display = 'none';
+      amountInStock.style.display = unit.textContent === 'jar(s)' ? 'none' : 'block';
+      amountInStock.textContent = itemQuantities
+        ? `In Stock: ${itemQuantities[value]}`
+        : 'In Stock: Loading...';
+      document.getElementById('month').value = '';
+      document.getElementById('quantity').focus();
+    }
+
+    function addItemListeners() {
+      const month = document.getElementById('month');
+      const dropdownItems = document.querySelectorAll('.dropdown-item');
+      dropdownItems.forEach(item => {
+        item.addEventListener('click', () => {
+          month.value = item.children[0].textContent;
+        });
+      });
+    }
+
+    function addItems() {
+      const quantity = document.getElementById('quantity');
+      const unit = document.getElementById('unit');
+      const month = document.getElementById('month');
+      if (selection.value == '') return;
+      if (quantity.value == '') {
+        alert('Please select item quantity.');
+        return;
+      }
+      if (selection.value.includes('Soap') && month.value == '') {
+        alert('Please select soap month.');
+        return;
+      }
+      // Format Name
+      let name = '';
+      const isPlural = quantity.value > 1 || quantity.value < -1 ? true : false;
+
+      let itemType = '';
+      if (selection.value.includes('Soap')) itemType = 'Soap';
+      else if (selection.value.includes('Bag')) itemType = 'Bag';
+      else if (selection.value.includes('Dishbar')) itemType = 'Dishbar';
+      else itemType = 'Hair';
+
+      if (unit.value === 'case') {
+        if (isPlural) name += ` cases ${selection.value}`;
+        else name += ` case ${selection.value}`;
+      } else name += ` ${selection.value}`;
+
+      if (month.value != '') name += ` (${month.value})`;
+      const color = quantity.value < 0 ? 'red' : 'green';
+
+      items.innerHTML += `
+      <li onmouseover="hoverEnter()" onmouseout="hoverExit()" onclick="removeItem(event)">
+        <span class='${color}'>${quantity.value}</span>${name}
+      </li>`;
+
+      // Reset Values
+      selection.value = '';
+      quantity.value = '';
+      document.getElementById('quantity-container').style.visibility = 'hidden';
+      document.getElementById('month-container').style.display = 'none';
+      document.getElementById('amountInStock').style.display = 'none';
+    }
+
+    function hoverEnter() {
+      document.getElementById('remove-item').classList.remove('hidden');
+    }
+
+    function removeItem(event) {
+      event.target.remove();
+      document.getElementById('remove-item').classList.add('hidden');
+    }
+
+    function hoverExit() {
+      document.getElementById('remove-item').classList.add('hidden');
+    }
+
+    function quantityOnChange(event) {
+      const input = event.target.value;
+      if (input > 0) event.target.style.color = 'green';
+      else if (input < 0) event.target.style.color = 'red';
+      else event.target.style.color = 'black';
+    }
+
+    // Code for Month Dropdown
+    hideDefaultDropdown = event => event.preventDefault();
+
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function (event) {
+      if (event.target.matches('#month')) {
+        document.getElementById('month-dropdown').classList.toggle('show');
+      } else {
+        document.getElementById('month-dropdown').classList.remove('show');
+      }
+    };
+
+    function submitRequest(event) {
+      event.preventDefault();
+
+      const end = () => google.script.host.close();
+      google.script.run.withSuccessHandler(end).placeItemEntries(items.innerText);
+      document.getElementById('loader').style.display = 'block';
+      formEnd.style.display = 'none';
+    }
+  </script>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+.bags {
+ width: 100%;
+ max-width: 50rem;
+ margin: auto;
+ display: flex;
+}
+
+.color {
+  width: 100%;
+  border: 1px solid black;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.color.natural {
+  --h: 38;
+  --s: 31.4%;
+  --l: 93.1%;
+  background-color: hsl(var(--h), var(--s), var(--l));
+}
+
+.color.green {
+  --h: 90;
+  --s: 40.2%;
+  --l: 52.7%;
+  background-color: hsl(var(--h), var(--s), var(--l));
+}
+
+.color.blue {
+  --h: 232;
+  --s: 43.3%;
+  --l: 63.3%;
+  background-color: hsl(var(--h), var(--s), var(--l));
+}
+
+.dropdown {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+  margin: 20px 20px 10px 5px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  width: 100%;
+}
+
+.dropdown-content button {
+  border: none;
+  font-size: 14px;
+  font-family: Arial;
+  background-color: white;
+  padding: 1rem;
+  text-align: left;
+  display: block;
+  margin: 0;
+  width: 100%;
+}
+
+.dropdown-content button:hover {
+ background-color: #ddd;
+ cursor:pointer;
+}
+
+.hover:hover .dropdown-content {display: block;}
+
+.hover:hover .color {
+  background-color: hsl(var(--h), var(--s), calc(var(--l) / 1.3) ) !important;
+  cursor: pointer;
+}
+
+section {
+  display: none;
+  margin: 3rem auto;
+  text-align: left;
+  font-size: 16px;
+  font-family: Arial;
+  max-width: 50rem;
+}
+
+p {
+  margin-left: 5px;
+  font-family: Arial;
+}
+
+.option {
+  display: flex;
+  width: 50%;
+  margin-left: 5px;
+}
+
+input {
+  display: block;
+  padding: 5px;
+  font-size: 16px;
+  width: 5rem;
+  margin: 1rem 0 0.5rem 5px;
+}
+
+.end {
+  border: solid 1px #e0dede;
+  width: 100%;
+  max-width: 10rem;
+  height: 25px;
+  margin: 1rem 20px 0 0;
+}
+  
+.end:hover {
+  background-color: #e0dede;
+  cursor: pointer;
+}
+
+#loader {
+  display: none;
+  border: 12px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 12px solid #444444;
+  width: 70px;
+  height: 70px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+}}
+
+.center {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+</style>
+</head>
+
+<body>
+  <div id="main" class="bags">
+  	<div class="dropdown hover">
+      <button class="color natural">Natural</button>
+      <div class="dropdown-content">
+        <button onClick="bagClick('6','Natural')">6 Pouch</button>
+        <button onClick="bagClick('4','Natural')">4 Pouch</button>
+      </div>
+    </div>
+    <div class="dropdown hover">
+      <button class="color green">Green</button>
+      <div class="dropdown-content">
+        <button onClick="bagClick('6','Green')">6 Pouch</button>
+        <button onClick="bagClick('4','Green')">4 Pouch</button>
+      </div>
+    </div>
+    <div class="dropdown hover">
+      <button class="color blue">Indigo</button>
+      <div class="dropdown-content">
+        <button onClick="bagClick('6','Indigo')">6 Pouch</button>
+        <button onClick="bagClick('4','Indigo')">4 Pouch</button>
+      </div>
+    </div>
+  </div>
+  <section>
+  	<p>Are you sure?</p>
+    <input id="amount" type="number" required/>
+    <div class="option">
+      <button class="end" onClick="confirm()">Confirm</button>
+      <button class="end" onClick="goBack()">Go Back</button>
+    </div>
+  </section>
+  <p id="endText" style="display:none;">Updating Totals</p>
+  <div id="loader" class="center"></div>
+</body>
+<script>
+  let pouches;
+  let color;
+  function bagClick(num, type){
+  	pouches = num;
+    color = type;
+    document.querySelector("section").style.display = "block";
+    document.querySelector("p").innerHTML = `How many ${num} Pouch ${type} Bags would you like to move?`;
+    let itemList = document.getElementsByClassName("dropdown");
+    for (let i = 0; i < itemList.length; i++){itemList[i].classList.remove("hover")};
+  }
+  
+  function goBack(){
+    document.querySelector("section").style.display = "none";
+    let itemList = document.getElementsByClassName("dropdown");
+    for (let i = 0; i < itemList.length; i++){itemList[i].classList.add("hover")};
+  }
+  
+  function confirm(){
+    let amount = document.getElementById("amount").value;
+    google.script.run.withSuccessHandler(end)
+      .moveBagsFromStorage(amount, pouches, color);
+
+    //Display Loader
+    document.querySelector("section").style.display = "none";
+    document.getElementById("main").style.display = "none";
+    document.getElementById("endText").style.display = "block";
+    document.getElementById("loader").style.display = "block";
+  }
+
+  function end(){google.script.host.close()};
+</script>
+</html>

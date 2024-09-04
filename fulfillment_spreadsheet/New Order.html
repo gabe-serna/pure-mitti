@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial;
+    }
+    body {overflow:hidden;}
+    .main {
+      display: flex;
+      height: 30em;
+      width: 100%;
+    }
+    .col {
+      width: 100%;
+      padding: 2em 0;
+    }
+    .right {
+      padding-left: 1.5em;
+    }
+    .col label {
+      display: block;
+      padding: 0;
+      margin: 0;
+    }
+    input, textarea  {
+      height: 2em;
+      width: 13.5em;
+      padding: 0.25em;
+      margin-bottom: 1.5em;
+    }
+    textarea {
+      overflow: hidden;
+      resize: vertical;
+      max-height: 5em;
+      min-height: 2em;
+      white-space-collapse: unset;
+      margin-bottom: 1.2em;
+    }
+    #submit-label {visibility: hidden;}
+    .red {color: red;}
+    </style>
+  </head>
+  <body>
+    <form id="form" class="main">
+      <div class="col">
+          <label for="name">Name<span class="red">*</span></label>
+          <input id="name" name="name" type="text" style="input" required/>
+          <label for="order-value">Order Value</label>
+          <input id="order-value" name="value" type="number" style="input"/>
+          <label id="submit-label" for="submit">Submit Button</label>
+          <input id="submit" name="submit" type="submit" value="Submit" style="input"/>
+      </div>
+      <div class="col right">
+        <label for="shipping">Customer Shipping Paid</label>
+        <input id="shipping" name="shipping" type="number" style="input"/>
+        <label for="items">Items</label>
+        <textarea id="items" name="items" style="input"></textarea>
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" style="input"></textarea>
+      </div>
+    </form>
+  </body>
+  <script>
+    document.getElementById("form").addEventListener("submit", submitValues);
+    function submitValues() {
+      let formValues = []
+
+      // Get form values
+      let name = document.getElementById("name").value;
+      let value = document.getElementById("order-value").value;
+      let shipping = document.getElementById("shipping").value;
+      let notes = document.getElementById("notes").value;
+      let items = document.getElementById("items").value;
+
+      // Send form values to function
+      formValues.push(name,value,shipping,notes,items);
+      google.script.run.placeManualNewOrder(formValues);
+      google.script.host.close();
+    }
+  </script>
+</html>

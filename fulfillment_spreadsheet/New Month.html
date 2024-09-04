@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <style>
+    * {
+      font-size: 16px;
+      font-family: Arial;
+      box-sizing: border-box;
+    }
+    
+    .select {
+      display: inline-block;
+      margin: 1.5rem 0;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+   
+    input[type="date"] {
+      width: 100%;
+      margin-bottom: 2rem;
+      padding: 2px 0;
+      border: 1px solid #767676;
+      border-radius: 3px;
+      transition: border 0.5s;
+    }
+    
+    input[type="date"]:hover, input[type="date"]:focus {
+      border: 1px solid #dbd0d0;
+      outline: none;
+    }
+    
+    input[type="submit"]{ 
+      width: 100%;
+      text-align: center;
+    }
+    
+    #loader {
+      display: none;
+      border: 12px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 12px solid #444444;
+      width: 70px;
+      height: 70px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+    }}
+
+    .center {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+
+    </style>
+  </head>
+  <body>
+    <form id="form" class="select">
+      <label for="soap">Insert Day for New Soap Month:</label>
+      <input id="soap" type="date" required/>
+      <input id="submit" type="submit" value="Enter"/>
+    </form>
+    <p id="endText" style="display:none;">Adding New Month</p>
+    <div id="loader" class="center"></div>
+  </body>
+  <script>
+    document.getElementById("form").addEventListener("submit", addMonth);
+    function addMonth(){
+      let month = document.getElementById("soap").value;
+      google.script.run.withSuccessHandler(end)
+      .addNewMonth(month);
+
+      //Display Loader
+      document.getElementById("form").style.display = "none";
+      document.getElementById("endText").style.display = "block";
+      document.getElementById("loader").style.display = "block";
+    }
+
+    function end(){google.script.host.close()};
+  </script>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: Arial;
+        --input-width: 11rem;
+      }
+      body {
+        overflow: hidden;
+      }
+      .main {
+        display: flex;
+        height: min-content;
+        width: 100%;
+      }
+      .col {
+        width: min-content;
+        padding: 1em;
+        padding-right: 1.5em;
+      }
+      .col label {
+        display: block;
+        padding: 0;
+        margin: 0;
+      }
+      input,
+      textarea,
+      .type,
+      #go-back {
+        height: 2em;
+        width: var(--input-width);
+        padding: 0.25em;
+        margin-bottom: 1.5em;
+      }
+      label {
+        width: var(--input-width);
+      }
+      #items-select {
+        width: var(--input-width);
+        padding: 0.25em;
+        margin-bottom: 1.5em;
+      }
+      .address {
+        overflow: hidden;
+        resize: none;
+        height: calc(4em + 38.5px);
+        min-height: 2em;
+        white-space-collapse: unset;
+        margin-bottom: 1.2em;
+      }
+      #submit-label {
+        visibility: hidden;
+      }
+      .red {
+        color: red;
+      }
+      .hidden {
+        display: none;
+      }
+      .items {
+        resize: none;
+        height: 11.25rem;
+        width: var(--input-width);
+        min-height: 2em;
+        white-space-collapse: unset;
+        margin-bottom: 1.2em;
+        border: 1px solid grey;
+        user-select: none;
+        font-size: 14px;
+        --webkit-user-select: none;
+        overflow-y: scroll;
+        padding-bottom: 0;
+
+        & ul {
+          padding: 6px 4px 0 1.375rem;
+          margin: 0;
+          & li {
+            padding-bottom: 4px;
+            &:hover {
+              color: red;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .item-button {
+        height: 1.5rem;
+        width: 5.5rem;
+        margin-bottom: 1.5em;
+      }
+      #remove-item {
+        height: min-content;
+        width: var(--input-width);
+        font-style: italic;
+        color: red;
+        background: transparent;
+        border: none;
+      }
+      ::-webkit-scrollbar {
+        background: transparent;
+        width: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: grey;
+        border-radius: 10px;
+      }
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      /* Firefox */
+      input[type='number'] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+      #loader {
+        border: 12px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 12px solid #444444;
+        width: 70px;
+        height: 70px;
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader" style="display: none"></div>
+    <form id="form-start" class="main">
+      <div class="col">
+        <label for="date">Date<span class="red">*</span></label>
+        <input id="date" date="name" type="date" required />
+        <label for="name">Name<span class="red">*</span></label>
+        <input id="name" name="name" type="text" required />
+        <label for="company-name">Company Name</label>
+        <input id="company-name" name="company" type="text" />
+        <label id="submit-label" for="submit">Submit Button</label>
+        <input id="submit-start" name="submit" type="submit" value="Next" />
+      </div>
+      <div class="col" style="margin-left: 3em">
+        <div>
+          <label for="source">Source<span class="red">*</span></label>
+          <input id="source" name="source" type="text" />
+        </div>
+        <div>
+          <label for="address">Address<span class="red">*</span></label>
+          <textarea id="address" name="address" class="address" required></textarea>
+        </div>
+      </div>
+    </form>
+    <form id="form-end" class="main hidden">
+      <div class="col">
+        <label for="items-select">Select Items</label>
+        <select
+          id="items-select"
+          name="items-select"
+          style="display: block"
+          size="10"
+          onchange="showItemOptions()"
+        >
+          <option value="" style="display: none" selected></option>
+          <optgroup label="Soaps">
+            <option value="Neem Soap">Neem Soap</option>
+            <option value="Tulsi Soap">Tulsi Soap</option>
+            <option value="Turmeric Soap">Turmeric Soap</option>
+            <option value="Vetiver Soap">Vetiver Soap</option>
+          </optgroup>
+          <optgroup label="Bags">
+            <option value="Natural 6 Pouch Bag">Natural 6 Pouch Bag</option>
+            <option value="Natural 4 Pouch Bag">Natural 4 Pouch Bag</option>
+            <option value="Green 6 Pouch Bag">Green 6 Pouch Bag</option>
+            <option value="Green 4 Pouch Bag">Green 4 Pouch Bag</option>
+            <option value="Indigo 6 Pouch Bag">Indigo 6 Pouch Bag</option>
+            <option value="Indigo 4 Pouch Bag">Indigo 4 Pouch Bag</option>
+          </optgroup>
+          <optgroup label="Dishbars">
+            <option value="Unscented Dishbar">Unscented Dishbar</option>
+            <option value="Basil Dishbar">Basil Dishbar</option>
+            <option value="Lemon Dishbar">Lemon Dishbar</option>
+          </optgroup>
+          <optgroup label="Hair Products">
+            <option value="Arappu">Arappu</option>
+            <option value="Moringa">Moringa</option>
+            <option value="Shikakai">Shikakai</option>
+            <option value="Herbal Hair Wash">Herbal Hair Wash</option>
+          </optgroup>
+        </select>
+        <div id="quantity-container" style="visibility: hidden">
+          <label for="quantity">Quantity<span class="red">*</span></label>
+          <div
+            style="
+              width: var(--input-width);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-top: 2px;
+            "
+          >
+            <input
+              id="quantity"
+              name="quantity"
+              style="width: 30%; margin-right: 0.25rem"
+              type="number"
+            />
+            <select id="unit" name="unit" class="type" style="width: 100%">
+              <option id="single-unit" value="single-unit">unit</option>
+              <option value="case">case(s)</option>
+            </select>
+          </div>
+        </div>
+        <div id="type-container" style="visibility: hidden">
+          <label for="type">Type<span class="red">*</span></label>
+          <select id="type" name="type" class="type" style="margin-top: 3px">
+            <option value="" style="display: none" selected></option>
+            <option value="full-size">Full Size Bar</option>
+            <option value="sample-size">Sample Size Bar</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 2.125rem; width: min-content; height: 11.25rem">
+        <button type="button" id="add-item" class="item-button">Add Item ➜</button>
+      </div>
+      <div class="col" style="padding-left: 1.5em">
+        <label for="items">Items Ordered</label>
+        <div id="items" name="items" class="items">
+          <ul id="items-list"></ul>
+        </div>
+        <input id="submit-end" name="submit" type="submit" value="Submit" />
+        <button id="go-back" type="button" onclick="goBack()">Go Back</button>
+        <button type="button" id="remove-item" class="hidden">
+          Click to Remove Item
+        </button>
+      </div>
+    </form>
+  </body>
+  <script>
+    const formStart = document.getElementById('form-start');
+    const formEnd = document.getElementById('form-end');
+    formStart.addEventListener('submit', next);
+    formEnd.addEventListener('submit', submitRequest);
+    document.getElementById('add-item').addEventListener('click', addItems);
+    document.getElementById('remove-item').addEventListener('click', removeItem);
+
+    const items = document.getElementById('items-list');
+    const selection = document.getElementById('items-select');
+
+    function showItemOptions() {
+      const quantity = document.getElementById('quantity-container');
+      const unit = document.getElementById('single-unit');
+      const type = document.getElementById('type-container');
+      const value = selection.value;
+
+      if (value.includes('Soap')) {
+        quantity.style.visibility = 'visible';
+        type.style.visibility = 'visible';
+        unit.textContent = 'soap(s)';
+        document.getElementById('quantity').focus();
+        return;
+      }
+
+      if (value.includes('Bag')) unit.textContent = 'bag(s)';
+      else if (value.includes('Dishbar')) unit.textContent = 'bar(s)';
+      else unit.textContent = 'jar(s)';
+
+      quantity.style.visibility = 'visible';
+      type.style.visibility = 'hidden';
+      document.getElementById('type').value = '';
+      document.getElementById('quantity').focus();
+    }
+
+    function addItems() {
+      const quantity = document.getElementById('quantity');
+      const unit = document.getElementById('unit');
+      const type = document.getElementById('type');
+      if (selection.value == '') return;
+      if (quantity.value == '') {
+        alert('Please select item quantity.');
+        return;
+      }
+      if (selection.value.includes('Soap') && type.value == '') {
+        alert('Please select soap type.');
+        return;
+      }
+      // Format Name
+      let name = `${quantity.value}`;
+      let isPlural = quantity.value > 1 ? true : false;
+
+      let itemType = '';
+      if (selection.value.includes('Soap')) itemType = 'Soap';
+      else if (selection.value.includes('Bag')) itemType = 'Bag';
+      else if (selection.value.includes('Dishbar')) itemType = 'Dishbar';
+      else itemType = 'Hair';
+
+      if (unit.value == 'case') {
+        if (isPlural) name += ` cases ${selection.value}`;
+        else name += ` case ${selection.value}`;
+      } else {
+        if (isPlural && itemType !== 'Hair') name += ` ${selection.value}s`;
+        else name += ` ${selection.value}`;
+      }
+
+      if (type.value == 'sample-size') name += ' (Sample Size)';
+
+      items.innerHTML += `<li onmouseover="hoverEnter()" onmouseout="hoverExit()" onclick="removeItem(event)">${name}</li>`;
+
+      // Reset Values
+      selection.value = '';
+      quantity.value = '';
+      document.getElementById('quantity-container').style.visibility = 'hidden';
+      document.getElementById('type-container').style.visibility = 'hidden';
+    }
+
+    function next(event) {
+      event.preventDefault();
+      formStart.style.display = 'none';
+      formEnd.style.display = 'flex';
+    }
+
+    function goBack() {
+      formStart.style.display = 'flex';
+      formEnd.style.display = 'none';
+    }
+
+    function hoverEnter() {
+      document.getElementById('remove-item').classList.remove('hidden');
+    }
+
+    function removeItem(event) {
+      event.target.remove();
+      document.getElementById('remove-item').classList.add('hidden');
+    }
+
+    function hoverExit() {
+      document.getElementById('remove-item').classList.add('hidden');
+    }
+
+    function submitRequest(event) {
+      event.preventDefault();
+      if (!items.innerHTML) {
+        alert('Please add an item.');
+        return false;
+      }
+
+      // Get form values
+      const date = document.getElementById('date').value;
+      const name = document.getElementById('name').value;
+      const company = document.getElementById('company-name').value;
+      const source = document.getElementById('source').value;
+      const itemList = items.innerText;
+      const address = document.getElementById('address').value;
+
+      // Send form values to function
+      const formValues = {
+        date: date,
+        name: name,
+        company: company,
+        source: source,
+        items: itemList,
+        address: address
+      };
+      google.script.run.withSuccessHandler(end).placeSampleRequest(formValues);
+      document.getElementById('loader').style.display = 'block';
+      formEnd.style.display = 'none';
+
+      return true;
+    }
+
+    const end = () => google.script.host.close();
+  </script>
+</html>

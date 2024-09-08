@@ -62,7 +62,7 @@ The Shipments Tab can be divided into 2 sections:
 1. Incoming Orders
 2. Outgoing Shipments
 
-Orders that come from <span style="color:forestgreen">**Shopify**</span>, <span style="color:grey">**Faire**</span>, and <span style="color:mediumpurple">**PodFoods**</span> will automatically be populated in the Incoming Orders section, and likewise will move to the Outgoing Shipments tab once shipped. <span style="color:darkorange">**Etsy**</span> has not yet been integrated.
+Orders that come from **Shopify**, **Faire**, and **PodFoods** will automatically be populated in the Incoming Orders section, and likewise will move to the Outgoing Shipments tab once shipped. **Etsy** has not yet been integrated.
 
 **All other orders you must add and update manually.**
 
@@ -83,11 +83,15 @@ Once an order is detected as being delivered, it will automatically clear from t
  <em>Fig 2. An example image of the Incoming Orders section</em>
 </p>
 
-The first thing you want to do when fulfilling orders is to check the **Incoming Orders** section. This will give you an overview of what orders you need to fulfill. <span style="color:darkorange">**Etsy**</span> orders will not appear here. **You must still manually check Faire for orders not yet accepted.**
+The first thing you want to do when fulfilling orders is to check the **Incoming Orders** section. This will give you an overview of what orders you need to fulfill. **Etsy** orders will not appear here.
+
+⚠️ **You must still manually check Faire for orders not yet accepted.**
 
 > For these orders, add notes regarding any extras that were sent _(flyers, shelf toppers, sample soaps, etc.)_, and adjust the Items Ordered column if needed _(item changes, errors with the script, etc.)_.
 
 As stated previously, these orders will automatically be moved to the Outgoing Shipments section and then to the Shipment Log.
+
+<br>
 
 ---
 
@@ -125,21 +129,24 @@ Once you have fulfilled all of the orders that come from these portals, you may 
 
 Sometimes, you will use the Shipment tab to check the shipping status of the orders you have recently sent out. Here are the common shipment statuses you will find and what you should do about them.
 
-<span style="color:dodgerblue">PRE_TRANSIT</span> or <span style="color:darkgrey">UNKNOWN</span> or <span style="color:darkgrey">CONFIRMED</span> or <span style="color:gray">not found</span>
+🔵 **PRE_TRANSIT** or **UNKNOWN** or **CONFIRMED** or _not found_
 
 - The package has not yet been scanned by the carrier.
+
 - This usually changes within a day or two at most. If a shipment has this status for a few days and has been given to the carrier, copy the tracking number and check the status on the carrier website for more detailed information.
   > Even if a package was not scanned at its drop-off location, it still may be scanned at a later date as it travels and can still be delivered.
 
-<span style="color:gold">TRANSIT</span>
+🟡 **TRANSIT**
 
 - The package is en route to the customer.
+
 - This is the most common tracking status you will see. Once a package has been scanned by the carrier its status will change to this up until when it gets delivered.
 - Once a shipment has this status, an **ETA** may be added at the bottom of its notes if it's available. If it is a few days past the ETA date, copy the tracking number and check the status on the carrier website for more detailed information. The shipment might be delayed or sometimes even lost.
 
-<span style="color:green">**DELIVERED**</span>
+🟢 **DELIVERED**
 
 - The package has successfully been delivered to the customer.
+
 - Most of the time you won't see this status because the spreadsheet will check every hour for shipments of this status and move it to the Shipment Log tab. In the case that you do see this status, just give it some time and it will automatically go away.
 
 <br>
@@ -151,14 +158,16 @@ Now here are some of the less common statuses and what they mean.
 
 <br>
 
-<span style="color:darkgrey">OUT_FOR_DELIVERY</span>
+**OUT_FOR_DELIVERY**
 
 - The package is out for delivery.
-- This will most likely go away within a day and will be replaced with <span style="color:green">**DELIVERED**</span> but may sometimes be replaced with <span style="color:darkgray">DELIVERY_ATTEMPTED</span>.
 
-<span style="color:darkgray">DELIVERY_ATTEMPTED</span>
+- This will most likely go away within a day and will be replaced with **DELIVERED** but may sometimes be replaced with **DELIVERY_ATTEMPTED**.
+
+**DELIVERY_ATTEMPTED**
 
 - The package had an unsuccessful delivery attempt and will make another attempt soon.
+
 - This will likely go away within a few days once a successful delivery attempt is made. If this status remains, copy the tracking number and check the status on the carrier website for more detailed information.
 
 <br>
@@ -167,7 +176,7 @@ Now here are some of the less common statuses and what they mean.
 
 [API Calls & Get New Orders](#api-calls--get-new-orders) - [Check If Shipped](#check-if-shipped) - [Check If Transit](#check-if-transit) - [Check If Delivered](#check-if-delivered)
 
-Even if you aren't going to be interacting with the source code, it would still be beneficial to understand at a high level what is going on "behind the scenes".
+Even if you aren't going to be interacting with the source code, it would still be beneficial to understand at a high level what is going on _"behind the scenes"_.
 
 Major Sections:
 
@@ -185,19 +194,19 @@ Major Sections:
 
 The first part of this script starts with making **API Calls** to the apps we use to retrieve all of our order data. This part is the most important because without this data there would be nothing to display in the spreadsheet.
 
-> _Think of an API like a waiter at a restaurant. You give the waiter your order, the waiter gives your order to the kitchen, and then once its done your waiter comes back with your order. It's the same process with an API. You give the API your request (in this case we want data about our orders), the API gives that request to Shopify/PodFoods/Etsy's backend where that data is stored, and then the API gives us whatever the backend returns._
+> _Think of an API like a waiter at a restaurant.<br><br>You give the waiter your order, the waiter gives your order to the kitchen, and then once its done your waiter comes back with your order. It's the same process with an API.<br><br>You give the API your request (in this case we want data about our orders), the API gives that request to Shopify/PodFoods/Etsy's backend where that data is stored, and then the API gives us whatever the backend returns._
 
 All of the API logic is stored in **Api Calls.gs** _(not uploaded to this repo for security reasons)_. The data retrieved from these calls are stored in separate sheets that are hidden by default. You actually find these sheets by clicking the "All Sheets" in the bottom left corner of the spreadsheet.
 
 <br>
 
-For <span style="color:forestgreen">**Shopify**</span> and <span style="color:mediumpurple">**PodFoods**</span>, we split up the data that we retrieve from the API calls into two categories:
+For **Shopify** and **PodFoods**, we split up the data that we retrieve from the API calls into two categories:
 
 - **New Orders**: Still need to be fulfilled and will show up in the Incoming Orders section.
 
 - **Shipped Orders**: Shipping label purchased and will show up in the Outgoing Shipments section.
 
-> <span style="color:grey">**Faire**</span> orders are currently tracked through the <span style="color:forestgreen">**Shopify**</span> API.
+> **Faire** orders are currently tracked through the **Shopify** API.
 
 Once we have all of the data stored in the spreadsheet, the next main function that runs is **Get New Orders**. All it does is add new orders to the Incoming Orders section if they aren't already there. Any of the functions regarding API calls or getting new orders can be run manually using one of the [Menu Item](#menu-items-reference) functions.
 
@@ -247,7 +256,7 @@ Now that all of the new orders have been added, the next part of the script is *
 
 As the name suggests, this part of the script checks all of the orders in the Incoming Orders section and checks if they have been shipped. The way it does this is by getting the order ID of the new order and searching for it in the list of shipped orders. If there is a match, then the order has been shipped and must be updated. If there is no match then it has not been shipped yet.
 
-> If you want to manually run this part of the script you can use the following Menu Item function: 🚚 **Update All Outgoing Shipments**
+> If you want to manually run this part of the script you can use the following Menu Item function:<br>🚚 **Update All Outgoing Shipments**
 
 <br>
 
@@ -255,11 +264,11 @@ As the name suggests, this part of the script checks all of the orders in the In
 
 Once an item has been shipped out, we can run the **Check If Transit** part of the script to update the ETA for all orders in the Outgoing Shipments section.
 
-The ETA will be appended to the bottom of each order's notes. If any updates are made to the ETA as the package is being shipped, the ETA in the spreadsheet will update accordingly. Until the carrier provides an ETA, the notes will remain unchanged.
+The ETA will be appended to the bottom of each order's notes that have the status of 🟡**TRANSIT**. If any updates are made to the ETA as the package is being shipped, the ETA in the spreadsheet will update accordingly. Until the carrier provides an ETA, the notes will remain unchanged.
 
-⚠️ On occassion the ETA might display <span style="color:grey">**"DELAYED"**</span>, in which case you should copy the tracking number and check the status on the carrier website for more detailed information.
+⚠️ On occassion the ETA might display **"DELAYED"**, in which case you should copy the tracking number and check the status on the carrier website for more detailed information.
 
-> If you want to manually run this part of the script you can use the following Menu Item function: ⏰ **Update ETA**
+> If you want to manually run this part of the script you can use the following Menu Item function:<br>⏰ **Update ETA**
 
 <br>
 
@@ -267,9 +276,9 @@ The ETA will be appended to the bottom of each order's notes. If any updates are
 
 As packages finally reach the customer, the final part of the script that cleans everything up is **Check If Delivered**.
 
-This part of the script runs by checking the status of all orders in the Outgoing Shipments section. Any orders that have a status of <span style="color:green">**DELIVERED**</span> will be removed from the Shipments tab and added to the Shipment Log tab. Inside the Shipment Log, you can see the history of all orders we have sent out since **2024** along with additional data such as Order Number, Order Value, Shipping Cost, Address, and more.
+This part of the script runs by checking the status of all orders in the Outgoing Shipments section. Any orders that have a status of 🟢**DELIVERED** will be removed from the Shipments tab and added to the Shipment Log tab. Inside the Shipment Log, you can see the history of all orders we have sent out since **2024** along with additional data such as Order Number, Order Value, Shipping Cost, Address, and more.
 
-> If you want to manually run this part of the script you can use the following Menu Item function: 📦 **Update All Delivered Shipments**
+> If you want to manually run this part of the script you can use the following Menu Item function:<br>📦 **Update All Delivered Shipments**
 
 ## Samples
 
@@ -282,30 +291,112 @@ This part of the script runs by checking the status of all orders in the Outgoin
   <em>Fig 6. Add New Orders Menu Item category</em>
 </p>
 
-To add an order to the samples tab, click on the **Add New Orders** Menu Item category and click: ➕ **New Sample Request**
+To add an order to the samples tab, click on the **Add New Orders** Menu Item category and click:
+
+➕ **New Sample Request**
 
 - This will open up a dialog where you can input the information about the order _(Name, Date, Address, etc.)_ and then select which items you would like to add to the sample request. Once you click submit, a new entry in the Samples tab will be added.
+
+<br>
 
 > Eventually there will be functionality for marking the an order as fulfilled and adding tracking information to it.
 
 ## Inventory
 
-Links - [The Inventory Entry Editor](#the-inventory-entry-editor)
+[The Inventory Entry Editor](#the-inventory-entry-editor)
 
-Treat the numbers shown here as **read-only**.
+<p align='center'>
+  <img src="https://i.ibb.co/L9k21b4/Screenshot-2024-09-08-133402.png" alt="Screenshot-2024-09-08-133402" border="0">
+</p>
 
-The more you manually edit on this side, the more likely it is for mistakes to occur.
+<p align='center'>
+  <em>Fig 7. A screenshot of the In-Stock Inventory section</em>
+</p>
+
+> Note: Treat the numbers shown here as **read-only**. The more you manually edit on this side, the more likely it is for mistakes to occur.
+
+The Inventory tab is the home for all things related to maintaining an accurate inventory count. Here you can find the current state of our inventory as well as a user interface for logging all inventory that comes and goes. This user interface will be called the **Inventory Entry Editor** and will be covered in the following section.
+
+<br>
+
+Before covering the Entry Editor though, there are two Menu Item functions that are used for the Inventory tab.
+
+<p align="center">
+<img src="https://i.ibb.co/mJ2sRc8/inventory-functions.png" alt="menu item functions for the inventory tab">
+</p>
+<p align="center">
+  <em>Fig 8. Menu Item Functions for the Inventory Tab</em>
+</p>
+
+<br>
+
+🛍️ **Move Bags from Storage to Floor**
+
+- Opens up a dialog where you select which type of bag you want to update, and then you input how many bags you are moving from the storage to the floor. Use this function whenever you take bags from storage and bring them down to the floor.
+
+<br>
+
+🫧 **Add New Soap Month**
+
+- Opens up a date picker dialog. When a new shipment of soaps arrive, use this function and input the date of the shipment's arrival to add a new soap batch month to the inventory count. You can then record the quantity of soaps that have been ordered in this shipment in the Inventory Entry Editor under the new date.
 
 ### The Inventory Entry Editor
 
+The user interface that is used to log what inventory is coming in and out is called the **Inventory Entry Editor**. You can see the current entry being edited on the right side of the Inventory Tab.
+
+> _The term "Entry" refers to a list of items that represent the movement of inventory on a particular day._<br><br>_When the Create New Entry section is empty, you may click **EDIT** to start working on a new entry. The items that appear in this section are part of the current entry. Once the details have been finalized, click **EXPORT** to push the entry to the log and update the inventory count. That entry may no longer be edited, and you may click **EDIT** to start a new entry._<br><br>_Each entry may have a maximum of 11 items at the time of writing_.
+
+<p align='center'>
+<img src="https://i.ibb.co/WfZSyK2/Screenshot-2024-09-08-142043.png" alt="Screenshot of a Sample Inventory Entry" width='500'>
+</p>
+<p align="center">
+  <em>Fig 9. A Sample Inventory Entry</em>
+</p>
+
+What is displayed on the spreadsheet in Fig. 9 is a sample inventory entry created using the Entry Editor. In this format you may make slight adjustments to the entries, but removing or adding items must be done with the Entry Editor.
+
+What can be adjusted outside of the Entry Editor?
+
+- **Quantity**: Overwrite the value with the desired value. Input a negative value (red) to indicate that inventory is being sent out, and input and positive value (green) to indicate that new inventory has arrived.
+
+- **Unit**: Click the arrow to open up a dropdown menu. You may select either a single unit or a case of that item. _(See [Case Reference](#case-reference) for how many units is in a case for each item.)_
+
+- **Item**: Click the arrow to open up a dropdown menu. You may only select between different variations of that item type _(other soaps, bags, dishbars, and hair products)_. To change the item to a different type, open the Inventory Entry Editor, delete the item, and then add the desired item.
+
+- **Month**- FOR SOAPS ONLY. Click the arrow to open up a dropdown menu. You may select any of the available soap month batches. Please reference the inventory count displayed on the left side of the Inventory Tab when selecting which soap month.
+
+<br>
+
 ---
 
-The key part of using the Inventory Tab is the **Inventory Entry Editor**.
+<br>
+
+To open the Inventory Entry Editor, click on where it says **EDIT** (look at Fig. 9 for reference) and the Editor dialog will appear. After loading briefly, you will be met with a screen pictured below.
+
+<p align='center'>
+<img src="https://i.ibb.co/xYnvGC3/image.png" alt="Screenshot of The Inventory Entry Editor in Use" width='500'>
+</p>
+
+<p align="center">
+  <em>Fig 10. The Inventory Entry Editor in Use</em>
+</p>
+
+If no items were previously added to this entry, the box labelled as **Item Entries** in Fig. 10 would be empty. Any items that were previously added to this entry and shown on the spreadsheet will be displayed here.
+
+In order to add an item entry, you must follow these steps:
+
+1. Click on the name of the item you wish to add to this entry.
+
+2. Select the quantity. Input a negative value (red) to indicate that inventory is being sent out, and input and positive value (green) to indicate that new inventory has arrived.
+3. Select the unit. You may select either a single unit or a case of that item. _(See [Case Reference](#case-reference) for how many units is in a case for each item)_
+4. FOR SOAPS ONLY. Select the month. A dropdown of all the soap batch months with the corresponding number of soaps in stock will appear to the right.
+
+⚠️<span style='color:red'>ADD SOAP CASE REFERNCE</span>⚠️
 
 ## Menu Items Reference
 
 <p align='center'>
-  <img src='https://cdn.discordapp.com/attachments/749955411456557056/1280860772364324916/image.png?ex=66daef8d&is=66d99e0d&hm=afb20e59d4450f11dd8c2502b76a2a238c1de696affe956d424c3ef131436f36&' alt='screenshot of menu items with arrows'>
+  <img src="https://i.ibb.co/7bFk9R9/Screenshot-2024-09-04-080246.png" alt="screenshot of menu items with arrows">
 </p>
 <p align="center">
   <em>Fig X. A screenshot of the Menu Items</em>
@@ -341,9 +432,11 @@ The key part of using the Inventory Tab is the **Inventory Entry Editor**.
 
 - Refreshes data for all apps including Incoming Orders and Outgoing Shipments.
 
+<br>
+<br>
+
 ---
 
-<br>
 <br>
 
 ➕ **Manually Add New Order**
@@ -362,9 +455,28 @@ The key part of using the Inventory Tab is the **Inventory Entry Editor**.
 
 - If a manual order was shipped out before it was added to the incoming orders section, use this to add it to the Outgoing Shipments section.
 
+<br>
+<br>
+
 ---
 
 <br>
-<br>
 
 🚚 **Update All Outgoing Shipments**
+
+<br>
+<br>
+
+---
+
+<br>
+
+🛍️ **Move Bags from Storage to Floor**
+
+- Opens up a dialog where you select which type of bag you want to update, and then you input how many bags you are moving from the storage to the floor. Use this function whenever you take bags from storage and bring them down to the floor.
+
+<br>
+
+🫧 **Add New Soap Month**
+
+- Opens up a date picker dialog. When a new shipment of soaps arrive, use this function and input the date of the shipment's arrival to add a new soap batch month to the inventory count. You can then record the quantity of soaps that have been ordered in this shipment in the Inventory Entry Editor under the new date.

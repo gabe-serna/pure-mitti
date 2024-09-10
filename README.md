@@ -340,11 +340,15 @@ Before covering the Entry Editor though, there are two Menu Item functions that 
 
 - Opens up a date picker dialog. When a new shipment of soaps arrive, use this function and input the date of the shipment's arrival to add a new soap batch month to the inventory count. You can then record the quantity of soaps that have been ordered in this shipment in the Inventory Entry Editor under the new date.
 
+<br>
+
 ### The Inventory Entry Editor
 
 The user interface that is used to log what inventory is coming in and out is called the **Inventory Entry Editor**. You can see the current entry being edited on the right side of the Inventory Tab.
 
 > _The term "Entry" refers to a list of items that represent the movement of inventory on a particular day._<br><br>_When the Create New Entry section is empty, you may click **EDIT** to start working on a new entry. The items that appear in this section are part of the current entry. Once the details have been finalized, click **EXPORT** to push the entry to the log and update the inventory count. That entry may no longer be edited, and you may click **EDIT** to start a new entry._<br><br>_Each entry may have a maximum of 11 items at the time of writing_.
+
+<br>
 
 <p align='center'>
 <img src="https://i.ibb.co/WfZSyK2/Screenshot-2024-09-08-142043.png" alt="Screenshot of a Sample Inventory Entry" width='500'>
@@ -394,6 +398,8 @@ In order to add an item entry, you must follow these steps:
 > _Note: To remove an item, hover over the item you wish to remove. It will turn red, and if you click on it you will remove it._
 
 ## Menu Items Reference
+
+[Case Pack Reference](#case-pack-reference)
 
 <p align='center'>
   <img src="https://i.ibb.co/7bFk9R9/Screenshot-2024-09-04-080246.png" alt="screenshot of menu items with arrows">

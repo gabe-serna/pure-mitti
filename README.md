@@ -254,7 +254,7 @@ Once we have all of the data stored in the spreadsheet, the next main function t
 
 Now that all of the new orders have been added, the next part of the script is **Check If Shipped**.
 
-As the name suggests, this part of the script checks all of the orders in the Incoming Orders section and checks if they have been shipped. The way it does this is by getting the order ID of the new order and searching for it in the list of shipped orders. If there is a match, then the order has been shipped and must be updated. If there is no match then it has not been shipped yet.
+As the name suggests, this part of the script checks every order in the Incoming Orders section to see if it has shipped. The way it does this is by getting the order ID of the new order and searching for it in the list of shipped orders. If there is a match, then the order has been shipped and must be updated. If there is no match then it has not been shipped yet.
 
 > If you want to manually run this part of the script you can use the following Menu Item function:<br>🚚 **Update All Outgoing Shipments**
 
@@ -276,7 +276,7 @@ The ETA will be appended to the bottom of each order's notes that have the statu
 
 As packages finally reach the customer, the final part of the script that cleans everything up is **Check If Delivered**.
 
-This part of the script runs by checking the status of all orders in the Outgoing Shipments section. Any orders that have a status of 🟢**DELIVERED** will be removed from the Shipments tab and added to the Shipment Log tab. Inside the Shipment Log, you can see the history of all orders we have sent out since **2024** along with additional data such as Order Number, Order Value, Shipping Cost, Address, and more.
+This part of the script works by checking the status of all orders in the Outgoing Shipments section. Any orders that have a status of 🟢**DELIVERED** will be removed from the Shipments tab and added to the Shipment Log tab. Inside the Shipment Log, you can see the history of all orders we have sent out since **2024** along with additional data such as Order Number, Order Value, Shipping Cost, Address, and more.
 
 > If you want to manually run this part of the script you can use the following Menu Item function:<br>📦 **Update All Delivered Shipments**
 
@@ -359,7 +359,7 @@ What can be adjusted outside of the Entry Editor?
 
 - **Quantity**: Overwrite the value with the desired value. Input a negative value (red) to indicate that inventory is being sent out, and input and positive value (green) to indicate that new inventory has arrived.
 
-- **Unit**: Click the arrow to open up a dropdown menu. You may select either a single unit or a case of that item. _(See [Case Reference](#case-reference) for how many units is in a case for each item.)_
+- **Unit**: Click the arrow to open up a dropdown menu. You may select either a single unit or a case of that item. _(See [Case Pack Reference](#case-pack-reference) for how many units is in a case for each item.)_
 
 - **Item**: Click the arrow to open up a dropdown menu. You may only select between different variations of that item type _(other soaps, bags, dishbars, and hair products)_. To change the item to a different type, open the Inventory Entry Editor, delete the item, and then add the desired item.
 
@@ -388,10 +388,10 @@ In order to add an item entry, you must follow these steps:
 1. Click on the name of the item you wish to add to this entry.
 
 2. Select the quantity. Input a negative value (red) to indicate that inventory is being sent out, and input and positive value (green) to indicate that new inventory has arrived.
-3. Select the unit. You may select either a single unit or a case of that item. _(See [Case Reference](#case-reference) for how many units is in a case for each item)_
+3. Select the unit. You may select either a single unit or a case of that item. _(See [Case Pack Reference](#case-pack-reference) for how many units is in a case for each item)_
 4. FOR SOAPS ONLY. Select the month. A dropdown of all the soap batch months with the corresponding number of soaps in stock will appear to the right.
 
-⚠️<span style='color:red'>ADD SOAP CASE REFERNCE</span>⚠️
+> _Note: To remove an item, hover over the item you wish to remove. It will turn red, and if you click on it you will remove it._
 
 ## Menu Items Reference
 
@@ -399,7 +399,7 @@ In order to add an item entry, you must follow these steps:
   <img src="https://i.ibb.co/7bFk9R9/Screenshot-2024-09-04-080246.png" alt="screenshot of menu items with arrows">
 </p>
 <p align="center">
-  <em>Fig X. A screenshot of the Menu Items</em>
+  <em>Fig 11. A screenshot of the Menu Items</em>
 </p>
 
 🟠 **Etsy**
@@ -439,6 +439,29 @@ In order to add an item entry, you must follow these steps:
 
 <br>
 
+🚚 **Update All Outgoing Shipments**
+
+- Checks every order in the Incoming Orders section to see if it has shipped. If an order is detected to be shipped, it will be move it to the Outgoing Shipments section.
+
+<br>
+
+⏰ **Update ETA**
+
+- Updates the ETA for all orders in the Outgoing Shipments section. The ETA will be appended to the bottom of each order's notes that have the status of 🟡**TRANSIT**.
+
+<br>
+
+📦 **Update All Delivered Shipments**
+
+- Checks all orders in the Outgoing Shipments section that have a status of 🟢**DELIVERED** will be removed from the Shipments tab and added to the Shipment Log tab
+
+<br>
+<br>
+
+---
+
+<br>
+
 ➕ **Manually Add New Order**
 
 - Use this to add a manual order to the Incoming Orders section.
@@ -462,15 +485,6 @@ In order to add an item entry, you must follow these steps:
 
 <br>
 
-🚚 **Update All Outgoing Shipments**
-
-<br>
-<br>
-
----
-
-<br>
-
 🛍️ **Move Bags from Storage to Floor**
 
 - Opens up a dialog where you select which type of bag you want to update, and then you input how many bags you are moving from the storage to the floor. Use this function whenever you take bags from storage and bring them down to the floor.
@@ -480,3 +494,28 @@ In order to add an item entry, you must follow these steps:
 🫧 **Add New Soap Month**
 
 - Opens up a date picker dialog. When a new shipment of soaps arrive, use this function and input the date of the shipment's arrival to add a new soap batch month to the inventory count. You can then record the quantity of soaps that have been ordered in this shipment in the Inventory Entry Editor under the new date.
+
+<br>
+<br>
+
+---
+
+### Add New Orders Menu
+
+➕ **New Sample Request**
+
+- This will open up a dialog where you can input the information about the order _(Name, Date, Address, etc.)_ and then select which items you would like to add to the sample request. Once you click submit, a new entry in the Samples tab will be added.
+
+<br>
+<br>
+
+### Case Pack Reference
+
+Depending on the item type, a "case pack" will refer to a specific quantity typically used for wholesale orders. Listed below is a reference for how many items are in a case per item type.
+
+Per Case:
+
+- **Soaps**: 10 soaps
+- **Dishbars**: 10 dishbars
+- **Bags**: 12 bags
+- **Hair Products**: 6 jars
